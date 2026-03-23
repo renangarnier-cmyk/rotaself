@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Rotation Self</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: white;
+  color: black;
+}
+
+.container {
+  padding: 40px;
+}
+
+.ligne {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  font-size: 50px;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+
+.heure {
+  font-weight: bold;
+}
+
+.classe {
+  color: #000000;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="contenu">
+  <!-- Les lignes vont apparaître ici -->
+</div>
+
+<script>
+// ⚠️ Remplace cette URL par ton script Google
+const URL = "https://script.google.com/macros/s/AKfycbz08bYROwUpTP22SalrmwWcQj-NTkUVqaj74qzvT4MZGrL9XbDIiatcEuXDK0Da_B76/exec";
+
+async function chargerDonnees() {
+  const response = await fetch(URL);
+  const text = await response.text();
+
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(text, "text/xml");
+
+  const items = xml.getElementsByTagName("item");
+
+  let html = "";
+
+  for (let i = 0; i < items.length; i++) {
+    const heure = items[i].getElementsByTagName("title")[0].textContent;
+    const classe = items[i].getElementsByTagName("description")[0].textContent;
+
+    html += `
+      <div class="ligne">
+        <span class="heure">${heure}</span>
+        <span class="classe">${classe}</span>
+      </div>
+    `;
+  }
+
+  document.getElementById("contenu").innerHTML = html;
+}
+
+// Chargement initial
+chargerDonnees();
+
+// Rafraîchissement toutes les 30 secondes
+setInterval(chargerDonnees, 30000);
+</script>
+
+</body>
+</html>
